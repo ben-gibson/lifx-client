@@ -3,23 +3,54 @@
 namespace Gibbo\Lifx\Entities;
 
 use Gibbo\Lifx\Entities\Value\Brightness;
+use Gibbo\Lifx\Entities\Value\Colour;
 use Gibbo\Lifx\Entities\Value\Power;
 
 /**
  * Represents a stat a light can be in.
  */
-class State
+class State implements \JsonSerializable
 {
+    /**
+     * @var Brightness
+     */
+    private $brightness;
+
+    /**
+     * @var Power
+     */
+    private $power;
+
+
+    /**
+     * @var Colour
+     */
+    private $colour;
+
     /**
      * Constructor.
      *
      * @param Power $power
      * @param Brightness $brightness
+     * @param Colour $colour
      */
-    public function __construct(Power $power, Brightness $brightness)
+    public function __construct(Power $power, Brightness $brightness, Colour $colour)
     {
         $this->brightness = $brightness;
-        $this->power      = $power;
+        $this->power = $power;
+        $this->colour = $colour;
+    }
+
+    /**
+     * Apply a colour.
+     *
+     * @param Colour $colour
+     *
+     * @return void
+     */
+    public function applyColour(Colour $colour): void
+    {
+        $this->colour = $colour;
     }
 
     /**
@@ -120,5 +151,27 @@ class State
     public function getBrightness(): float
     {
         return $this->brightness->getValue();
+    }
+
+    /**
+     * Get the colour.
+     *
+     * @return Colour
+     */
+    public function getColour(): Colour
+    {
+        return $this->colour;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'power' => $this->isOn() ? 'on' : 'off',
+            'brightness' => $this->getBrightness(),
+            'color' => $this->colour->__toString()
+        ];
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ab046bc864dc3fefe5d226122cdd3fb5",
+    "content-hash": "2d0ef7452d4e71eb8cb77ff0f05ab883",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -241,6 +241,45 @@
                 "url"
             ],
             "time": "2017-03-20T17:10:46+00:00"
+        },
+        {
+            "name": "liampm/swaddle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/liampm/swaddle.git",
+                "reference": "133a30db3a11ecdda80e6ed71e3e5dc0db6e4fbc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/liampm/swaddle/zipball/133a30db3a11ecdda80e6ed71e3e5dc0db6e4fbc",
+                "reference": "133a30db3a11ecdda80e6ed71e3e5dc0db6e4fbc",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "liampm\\Swaddle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Liam Morriss",
+                    "email": "liam717@gmail.com"
+                }
+            ],
+            "description": "Swaddle acts as a wrapper around unknown collections of key-value pairs.",
+            "time": "2017-03-30 19:03:50"
         },
         {
             "name": "psr/http-message",
@@ -1824,7 +1863,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "liampm/swaddle": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -35,6 +35,16 @@ class Selector
     }
 
     /**
+     * Random.
+     *
+     * @return static
+     */
+    public static function random()
+    {
+        return new static(static::all()->__toString().':random');
+    }
+
+    /**
      * Single light sector.
      *
      * @param Light $light
@@ -44,6 +54,30 @@ class Selector
     public static function light(Light $light)
     {
         return new static(sprintf('id:%s', $light->getId()));
+    }
+
+    /**
+     * Group sector.
+     *
+     * @param Group $group
+     *
+     * @return static
+     */
+    public static function group(Group $group)
+    {
+        return new static(sprintf('group_id:%s', $group->getId()));
+    }
+
+    /**
+     * Location sector.
+     *
+     * @param Location $location
+     *
+     * @return static
+     */
+    public static function location(Location $location)
+    {
+        return new static(sprintf('location_id:%s', $location->getId()));
     }
 
     /**

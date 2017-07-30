@@ -3,11 +3,9 @@
 namespace Gibbo\Lifx;
 
 use Gibbo\Lifx\Entities\Selector;
-use Gibbo\Lifx\Entities\Value\Brightness;
-use Gibbo\Lifx\Entities\Value\Id;
 use Gibbo\Lifx\Entities\Light;
-use Gibbo\Lifx\Entities\Value\Power;
 use Gibbo\Lifx\Entities\State;
+use Gibbo\Lifx\Factory\LightFactory;
 use GuzzleHttp\Client as HttpClient;
 
 /**
@@ -26,15 +24,22 @@ class Lifx
     private $configuration;
 
     /**
+     * @var LightFactory
+     */
+    private $lightFactory;
+
+    /**
      * Constructor.
      *
      * @param HttpClient $client
      * @param Configuration $configuration
+     * @param LightFactory $lightFactory
      */
-    public function __construct(HttpClient $client, Configuration $configuration)
+    public function __construct(HttpClient $client, Configuration $configuration, LightFactory $lightFactory)
     {
         $this->client        = $client;
         $this->configuration = $configuration;
+        $this->lightFactory  = $lightFactory;
     }
 
     /**
@@ -48,22 +53,12 @@ class Lifx
             $this->configuration->getUrlForEndPoint('lights/all'),
             ['headers' => ['Authorization' => $this->configuration->getAuthorisationBearer()]]
         );
-
-        $lights = \GuzzleHttp\json_decode($response->getBody()->getContents());
-
-        // lazy - factory needed.
+        
         return array_map(
             function (\stdClass $light) {
-                return new Light(
-                    new Id($light->id),
-                    $light->label,
-                    new State(
-                        ($light->power === 'on') ? Power::on() : Power::off(),
-                        new Brightness($light->brightness)
-                    )
-                );
+                return $this->lightFactory->create($light);
             },
-            $lights
+            \GuzzleHttp\json_decode($response->getBody()->getContents())
         );
     }
 
@@ -113,14 +108,6 @@ class Lifx
      */
     private function setState(Selector $selector, State $state): void
     {
-        $body = \GuzzleHttp\json_encode(
-            [
-                'power' => $state->isOn() ? 'on' : 'off',
-                'brightness' => $state->getBrightness(),
-                'color' => 'blue'
-            ]
-        );
-
         $response = $this->client->put(
             $this->configuration->getUrlForEndPoint(sprintf('lights/%s/state', $selector)),
             [
@@ -128,7 +115,7 @@ class Lifx
                     'Authorization' => $this->configuration->getAuthorisationBearer(),
                     'Content-Type' => 'application/json'
                 ],
-                'body' => $body,
+                'body' => \GuzzleHttp\json_encode($state),
             ]
         );
     }
