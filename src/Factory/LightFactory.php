@@ -2,15 +2,14 @@
 
 namespace Gibbo\Lifx\Factory;
 
-use Gibbo\Lifx\Description;
-use Gibbo\Lifx\Entities\Group;
-use Gibbo\Lifx\Entities\Light;
-use Gibbo\Lifx\Entities\Location;
-use Gibbo\Lifx\Entities\State;
-use Gibbo\Lifx\Entities\Value\Brightness;
-use Gibbo\Lifx\Entities\Value\Colour;
-use Gibbo\Lifx\Entities\Value\Id;
-use Gibbo\Lifx\Entities\Value\Power;
+use Gibbo\Lifx\Domain\Group;
+use Gibbo\Lifx\Domain\Light;
+use Gibbo\Lifx\Domain\Location;
+use Gibbo\Lifx\Domain\State;
+use Gibbo\Lifx\Domain\Value\Brightness;
+use Gibbo\Lifx\Domain\Value\Colour;
+use Gibbo\Lifx\Domain\Value\Id;
+use Gibbo\Lifx\Domain\Value\Power;
 use liampm\Swaddle\Swaddle;
 
 /**
@@ -18,19 +17,13 @@ use liampm\Swaddle\Swaddle;
  */
 class LightFactory
 {
-    /**
-     * Create a light from a description.
-     *
-     * @param \stdClass $description
-     *
-     * @return Light
-     */
-    public function create(\stdClass $description): Light
+
+    public function create(\stdClass $description) : Light
     {
         $swaddle = Swaddle::wrapObject($description, true);
 
-        $colourSwaddle = $swaddle->getProperty('color');
-        $groupSwaddle = $swaddle->getProperty('group');
+        $colourSwaddle   = $swaddle->getProperty('color');
+        $groupSwaddle    = $swaddle->getProperty('group');
         $locationSwaddle = $swaddle->getProperty('location');
 
         return new Light(
@@ -45,6 +38,7 @@ class LightFactory
                 $locationSwaddle->getProperty('name')
             ),
             new \DateTimeImmutable($swaddle->getProperty('last_seen')),
+            $swaddle->getProperty('connected'),
             new State(
                 ($swaddle->getProperty('power') === 'on') ? Power::on() : Power::off(),
                 new Brightness($swaddle->getProperty('brightness')),

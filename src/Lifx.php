@@ -2,39 +2,28 @@
 
 namespace Gibbo\Lifx;
 
-use Gibbo\Lifx\Entities\Selector;
-use Gibbo\Lifx\Entities\Light;
-use Gibbo\Lifx\Entities\State;
+use Gibbo\Lifx\Domain\Lights;
+use Gibbo\Lifx\Domain\Selector;
+use Gibbo\Lifx\Domain\Light;
+use Gibbo\Lifx\Domain\State;
+use Gibbo\Lifx\Exception\InvalidResponseException;
+use Gibbo\Lifx\Exception\LightNotConnectedException;
 use Gibbo\Lifx\Factory\LightFactory;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * Lifx.
  */
 class Lifx
 {
-    /**
-     * @var HttpClient
-     */
     private $client;
 
-    /**
-     * @var Configuration
-     */
     private $configuration;
 
-    /**
-     * @var LightFactory
-     */
     private $lightFactory;
 
-    /**
-     * Constructor.
-     *
-     * @param HttpClient $client
-     * @param Configuration $configuration
-     * @param LightFactory $lightFactory
-     */
+
     public function __construct(HttpClient $client, Configuration $configuration, LightFactory $lightFactory)
     {
         $this->client        = $client;
@@ -42,81 +31,56 @@ class Lifx
         $this->lightFactory  = $lightFactory;
     }
 
-    /**
-     * Get all the lights.
-     *
-     * @return Light[]
-     */
-    public function getAllLights()
+
+    public function lights() : Lights
     {
         $response = $this->client->get(
-            $this->configuration->getUrlForEndPoint('lights/all'),
-            ['headers' => ['Authorization' => $this->configuration->getAuthorisationBearer()]]
+            $this->configuration->urlForEndPoint('lights/all'),
+            ['headers' => ['Authorization' => $this->configuration->authorisationBearer()]]
         );
-        
-        return array_map(
-            function (\stdClass $light) {
-                return $this->lightFactory->create($light);
-            },
-            \GuzzleHttp\json_decode($response->getBody()->getContents())
+
+        return new Lights(
+            ...array_map(
+                function (\stdClass $light) {
+                    return $this->lightFactory->create($light);
+                },
+                \GuzzleHttp\json_decode($response->getBody()->getContents())
+            )
         );
     }
 
-    /**
-     * Update a light.
-     *
-     * @param Light $light
-     *
-     * @return void
-     */
-    public function updateLight(Light $light): void
+
+    public function update(Light $light) : void
     {
-        $this->setState(Selector::light($light), $light->getState());
+        if (!$light->connected()) {
+            throw new LightNotConnectedException($light);
+        }
+
+        $this->affect(Selector::light($light), $light->state());
     }
 
-    /**
-     * Update the state of all lights.
-     *
-     * @param State $state
-     *
-     * @return void
-     */
-    public function updateAll(State $state): void
+
+    public function matchState(Selector $selector, State $state) : void
     {
-        $this->setState(Selector::all(), $state);
+        $this->affect($selector, $state);
     }
 
-    /**
-     * Match all lights to the same state as the given light.
-     *
-     * @param Light $light
-     *
-     * @return void
-     */
-    public function matchAllToLight(Light $light): void
-    {
-        $this->setState(Selector::all(), $light->getState());
-    }
 
-    /**
-     * Set the state.
-     *
-     * @param Selector $selector
-     * @param State $state
-     *
-     * @return void
-     */
-    private function setState(Selector $selector, State $state): void
+    private function affect(Selector $selector, State $state) : void
     {
-        $response = $this->client->put(
-            $this->configuration->getUrlForEndPoint(sprintf('lights/%s/state', $selector)),
-            [
-                'headers' => [
-                    'Authorization' => $this->configuration->getAuthorisationBearer(),
-                    'Content-Type' => 'application/json'
-                ],
-                'body' => \GuzzleHttp\json_encode($state),
-            ]
-        );
+        try {
+            $this->client->put(
+                $this->configuration->urlForEndPoint(sprintf('lights/%s/state', $selector)),
+                [
+                    'headers' => [
+                        'Authorization' => $this->configuration->authorisationBearer(),
+                        'Content-Type'  => 'application/json',
+                    ],
+                    'body'    => \GuzzleHttp\json_encode($state),
+                ]
+            );
+        } catch (RequestException $exception) {
+            throw new InvalidResponseException($exception->getMessage());
+        }
     }
 }

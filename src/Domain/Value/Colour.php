@@ -1,36 +1,21 @@
 <?php
 
-namespace Gibbo\Lifx\Entities\Value;
+namespace Gibbo\Lifx\Domain\Value;
 
 use Assert\Assert;
 
 /**
- * Colour.
+ * Describes the colour of a Lifx light.
  */
 class Colour
 {
-    /**
-     * @var float
-     */
     private $hue;
 
-    /**
-     * @var float
-     */
     private $saturation;
 
-    /**
-     * @var float
-     */
     private $kelvin;
 
-    /**
-     * Constructor.
-     *
-     * @param float $hue
-     * @param float $saturation
-     * @param int $kelvin
-     */
+
     public function __construct(float $hue = null, float $saturation = null, int $kelvin = null)
     {
         Assert::that($hue)->nullOr()->float()->between(0, 360);
@@ -42,55 +27,38 @@ class Colour
         $this->kelvin     = $kelvin;
     }
 
-    /**
-     * Create as a measure of kelvin.
-     *
-     * @param int $value
-     *
-     * @return static
-     */
-    public static function kelvin(int $value)
+
+    public static function kelvin(int $value) : self
     {
         return new static(null, null, $value);
     }
 
-    /**
-     * Create as a measure of hue.
-     *
-     * @param float $hue
-     * @param float $saturation
-     *
-     * @return static
-     */
-    public static function hue(float $hue, float $saturation)
+
+    public static function hue(float $hue, float $saturation) : self
     {
         return new static($hue, $saturation, null);
     }
 
-    /**
-     * Red.
-     *
-     * @return static
-     */
-    public static function red()
+
+    public static function red() : self
     {
         return static::hue(0, 1);
     }
 
-    /**
-     * Green
-     *
-     * @return static
-     */
-    public static function green()
+
+    public static function green() : self
     {
         return static::hue(120, 1);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function __toString()
+
+    public function toString() : string
+    {
+        return $this->__toString();
+    }
+
+
+    public function __toString() : string
     {
         $colour = '';
 

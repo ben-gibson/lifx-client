@@ -19,9 +19,40 @@ $ composer require ben-gibson/lifx-client
 
 ## Usage
 
+Build the Lifx service.
+
 ``` php
-$skeleton = new ben-gibson\lifx-client();
-echo $skeleton->echoPhrase('Hello, League!');
+$lifx = new Lifx(
+    new \GuzzleHttp\Client(),
+    new Configuration(
+        'https://api.lifx.com',
+        'v1',
+        'my-token'
+    ),
+    new LightFactory()
+);
+```
+
+Modify a single light.
+
+``` php
+$lights = $lifx->lights();
+
+$light = $lights->connected()->current();
+
+$light->turnOn();
+$light->pickColour(Colour::red());
+$light->maximumBrightness();
+
+$lifx->update($light);
+```
+
+Modify all lights.
+
+``` php
+$state = new State(Power::on(), Brightness::maximum(), Colour::green());
+
+$lifx->matchState(Selector::all(), $state);
 ```
 
 ## Change log
