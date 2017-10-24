@@ -12,9 +12,6 @@ use Gibbo\Lifx\Factory\LightFactory;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
 
-/**
- * Lifx.
- */
 class Lifx
 {
     private $client;
@@ -52,7 +49,7 @@ class Lifx
 
     public function update(Light $light) : void
     {
-        if (!$light->connected()) {
+        if (!$light->isConnected()) {
             throw new LightNotConnectedException($light);
         }
 

@@ -40,11 +40,12 @@ $lights = $lifx->lights();
 
 $light = $lights->connected()->current();
 
-$light->turnOn();
+$light->on();
 $light->pickColour(Colour::red());
 $light->maximumBrightness();
 
 $lifx->update($light);
+
 ```
 
 Modify all lights.
@@ -62,7 +63,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 ## Testing
 
 ``` bash
-$ composer test
+$ docker-compose run lifx-client composer test
 ```
 
 ## Contributing

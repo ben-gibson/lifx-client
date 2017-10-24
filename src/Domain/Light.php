@@ -2,12 +2,10 @@
 
 namespace Gibbo\Lifx\Domain;
 
+use Gibbo\Lifx\Domain\Value\Brightness;
 use Gibbo\Lifx\Domain\Value\Colour;
 use Gibbo\Lifx\Domain\Value\Id;
 
-/**
- * Represents a Lifx light.
- */
 class Light
 {
     private $id;
@@ -52,7 +50,7 @@ class Light
     /**
      * Tells us if the light is connected to the internet - not the same as power on/off.
      */
-    public function connected() : bool
+    public function isConnected() : bool
     {
         return $this->connected;
     }
@@ -64,15 +62,15 @@ class Light
     }
 
 
-    public function turnOn() : void
+    public function on() : void
     {
-        $this->state->turnOn();
+        $this->state->on();
     }
 
 
-    public function turnOff() : void
+    public function off() : void
     {
-        $this->state->turnOff();
+        $this->state->off();
     }
 
 
@@ -112,7 +110,7 @@ class Light
     }
 
 
-    public function brightness() : float
+    public function brightness() : Brightness
     {
         return $this->state->brightness();
     }

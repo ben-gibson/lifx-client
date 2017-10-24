@@ -2,9 +2,6 @@
 
 namespace Gibbo\Lifx\Domain\Value;
 
-/**
- * Power (on/off).
- */
 class Power
 {
     private $state;
@@ -45,20 +42,7 @@ class Power
         return new static(!!$this->state);
     }
 
-
-    public function turnOn() : self
-    {
-        return static::on();
-    }
-
-
-    public function turnOff() : self
-    {
-        return static::off();
-    }
-
-
-    public function toString()
+    public function toString() : string
     {
         return ($this->isOn()) ? 'on' : 'off';
     }

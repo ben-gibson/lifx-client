@@ -12,9 +12,6 @@ use Gibbo\Lifx\Domain\Value\Id;
 use Gibbo\Lifx\Domain\Value\Power;
 use liampm\Swaddle\Swaddle;
 
-/**
- * A factory to create Lifx lights from a description.
- */
 class LightFactory
 {
 

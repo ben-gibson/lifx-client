@@ -4,9 +4,6 @@ namespace Gibbo\Lifx\Domain;
 
 use Gibbo\Lifx\Domain\Value\Id;
 
-/**
- * Represents the grouping of lights.
- */
 class Group
 {
     private $id;
@@ -30,6 +27,16 @@ class Group
     public function name() : string
     {
         return $this->name;
+    }
+
+
+    public function equals(Group $group) : bool
+    {
+        return (
+            $this->id() === $group->id() &&
+            $this->name() === $group->name() &&
+            get_class($this) === get_class($group)
+        );
     }
 
 

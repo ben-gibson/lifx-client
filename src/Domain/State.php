@@ -38,15 +38,15 @@ class State implements \JsonSerializable
     }
 
 
-    public function turnOn() : void
+    public function on() : void
     {
-        $this->power = $this->power->turnOn();
+        $this->power = $this->power->on();
     }
 
 
-    public function turnOff() : void
+    public function off() : void
     {
-        $this->power = $this->power->turnOff();
+        $this->power = $this->power->off();
     }
 
 
@@ -86,9 +86,9 @@ class State implements \JsonSerializable
     }
 
 
-    public function brightness() : float
+    public function brightness() : Brightness
     {
-        return $this->brightness->value();
+        return $this->brightness;
     }
 
 
@@ -98,7 +98,7 @@ class State implements \JsonSerializable
     }
 
 
-    public function jsonSerialize()
+    public function jsonSerialize() : array
     {
         return [
             'power'      => $this->power->toString(),

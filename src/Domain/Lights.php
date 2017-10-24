@@ -4,9 +4,6 @@ namespace Gibbo\Lifx\Domain;
 
 use ArrayIterator;
 
-/**
- * A collection of Lifx lights
- */
 class Lights implements \IteratorAggregate
 {
     private $position = 0;
@@ -26,14 +23,14 @@ class Lights implements \IteratorAggregate
             ...array_filter(
                 $this->lights,
                 function (Light $light) {
-                    return $light->connected();
+                    return $light->isConnected();
                 }
             )
         );
     }
 
 
-    public function current()
+    public function current() : ?Light
     {
         return $this->getIterator()->current();
     }

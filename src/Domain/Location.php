@@ -4,9 +4,6 @@ namespace Gibbo\Lifx\Domain;
 
 use Gibbo\Lifx\Domain\Value\Id;
 
-/**
- * Describes the location of a light e.g. Lounge, Bedroom, Hallway etc
- */
 class Location
 {
     private $id;
@@ -30,6 +27,12 @@ class Location
     public function name() : string
     {
         return $this->name;
+    }
+
+
+    public function equals(Location $location) : bool
+    {
+        return ($this->toString() === $location->toString() && get_class($this) === get_class($location));
     }
 
 

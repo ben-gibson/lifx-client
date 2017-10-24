@@ -4,9 +4,6 @@ namespace Gibbo\Lifx\Domain\Value;
 
 use Assert\Assert;
 
-/**
- * Describes the colour of a Lifx light.
- */
 class Colour
 {
     private $hue;
@@ -55,6 +52,12 @@ class Colour
     public function toString() : string
     {
         return $this->__toString();
+    }
+
+
+    public function equals(Colour $colour) : bool
+    {
+        return ($this->toString() === $colour->toString() && get_class($this) === get_class($colour));
     }
 
 

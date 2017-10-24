@@ -4,9 +4,6 @@ namespace Gibbo\Lifx\Domain\Value;
 
 use Assert\Assert;
 
-/**
- * Describes the Brightness of a Lifx light.
- */
 class Brightness
 {
 
@@ -72,5 +69,11 @@ class Brightness
     public function value() : float
     {
         return $this->value;
+    }
+
+
+    public function equals(Brightness $brightness) : bool
+    {
+        return ($this->value() === $brightness->value() && get_class($this) === get_class($brightness));
     }
 }
