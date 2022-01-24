@@ -69,10 +69,6 @@ $ composer test
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
-## Security
-
-If you discover any security related issues, please email ben.gibson.2011@gmail.com instead of using the issue tracker.
-
 ## Credits
 
 - [Ben Gibson][link-author]
